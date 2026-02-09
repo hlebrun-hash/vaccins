@@ -26,7 +26,7 @@ const letterVariants = {
         color: "inherit",
     },
     animate: {
-        y: "-120%",
+        y: -25, // Fixed pixel value ensures icon and text move the same distance
         color: "#059669", // emerald-600
         transition: {
             type: "spring" as const,

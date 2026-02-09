@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, User, Calendar, Baby, Syringe, ShieldCheck } from "lucide-react";
+import { Check, User, Calendar, Baby, Syringe, ShieldCheck, ExternalLink, Info, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import KineticDotsLoader from "@/components/ui/kinetic-dots-loader";
 import { Input } from "@/components/ui/input";
@@ -17,13 +17,16 @@ interface Recommendation {
     pharmacistPrescribable?: boolean;
 }
 
-const RecommendationItem = ({ rec }: { rec: Recommendation }) => {
+const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div
+        <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
             onClick={() => setIsOpen(!isOpen)}
-            className="group cursor-pointer"
+            className="group cursor-pointer select-none"
         >
             <div className="flex gap-4 items-start">
                 <div className={cn(
@@ -33,9 +36,19 @@ const RecommendationItem = ({ rec }: { rec: Recommendation }) => {
                     <Syringe className="w-4 h-4" />
                 </div>
                 <div className="flex-1">
-                    <h3 className="font-semibold text-slate-800 text-lg leading-tight group-hover:text-emerald-600 transition-colors">
-                        {rec.vaccine}
-                    </h3>
+                    <div className="flex justify-between items-start gap-2">
+                        <h3 className="font-semibold text-slate-800 text-lg leading-tight group-hover:text-emerald-600 transition-colors">
+                            {rec.vaccine}
+                        </h3>
+                        {rec.description && (
+                            <motion.div
+                                animate={{ rotate: isOpen ? 180 : 0 }}
+                                className="text-slate-300 group-hover:text-emerald-400 transition-colors mt-0.5"
+                            >
+                                <ChevronDown className="w-5 h-5" />
+                            </motion.div>
+                        )}
+                    </div>
                     <p className="text-slate-500 text-sm mt-1 font-medium">{rec.reason}</p>
 
                     <AnimatePresence>
@@ -61,7 +74,7 @@ const RecommendationItem = ({ rec }: { rec: Recommendation }) => {
                     )}
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
@@ -282,7 +295,14 @@ export const VaccinationAssistant = () => {
         // Note : Hépatite A, Rage, Typhoïde sont des vaccins "Voyage" ou "Risque Pro".
         // Ils ne sont pas affichés par défaut pour respecter le critère "Lien avec le profil".
 
-        setRecommendations(recs);
+        // Tri des recommandations : "Urgent" (Orange) en premier
+        const sortedRecs = [...recs].sort((a, b) => {
+            if (a.urgent && !b.urgent) return -1;
+            if (!a.urgent && b.urgent) return 1;
+            return 0;
+        });
+
+        setRecommendations(sortedRecs);
         setShowResult(true);
         setIsLoading(false);
     };
@@ -351,23 +371,25 @@ export const VaccinationAssistant = () => {
                                     <button
                                         onClick={() => setSex("female")}
                                         className={cn(
-                                            "flex-1 p-4 rounded-2xl border transition-all duration-300 flex justify-center items-center gap-2 text-sm font-medium",
+                                            "flex-1 p-4 rounded-2xl border-2 transition-all duration-300 flex justify-center items-center gap-2 text-sm font-bold",
                                             sex === "female"
-                                                ? "bg-pink-50 border-pink-200 text-pink-700 shadow-sm"
-                                                : "bg-slate-50 border-transparent text-slate-600 hover:bg-slate-100"
+                                                ? "bg-emerald-50 border-emerald-500 text-emerald-700 shadow-md"
+                                                : "bg-white border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-slate-50"
                                         )}
                                     >
+                                        {sex === "female" && <Check className="w-4 h-4" />}
                                         Femme
                                     </button>
                                     <button
                                         onClick={() => setSex("male")}
                                         className={cn(
-                                            "flex-1 p-4 rounded-2xl border transition-all duration-300 flex justify-center items-center gap-2 text-sm font-medium",
+                                            "flex-1 p-4 rounded-2xl border-2 transition-all duration-300 flex justify-center items-center gap-2 text-sm font-bold",
                                             sex === "male"
-                                                ? "bg-blue-50 border-blue-200 text-blue-700 shadow-sm"
-                                                : "bg-slate-50 border-transparent text-slate-600 hover:bg-slate-100"
+                                                ? "bg-emerald-50 border-emerald-500 text-emerald-700 shadow-md"
+                                                : "bg-white border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-slate-50"
                                         )}
                                     >
+                                        {sex === "male" && <Check className="w-4 h-4" />}
                                         Homme
                                     </button>
                                 </div>
@@ -387,7 +409,7 @@ export const VaccinationAssistant = () => {
                                             className={cn(
                                                 "p-4 rounded-2xl border cursor-pointer flex items-center gap-3 transition-colors",
                                                 isPregnant
-                                                    ? "bg-pink-50 border-pink-200"
+                                                    ? "bg-emerald-50 border-emerald-200"
                                                     : "bg-slate-50 border-transparent hover:bg-slate-100"
                                             )}
                                         >
@@ -395,14 +417,14 @@ export const VaccinationAssistant = () => {
                                                 className={cn(
                                                     "w-5 h-5 rounded-full border flex items-center justify-center transition-colors",
                                                     isPregnant
-                                                        ? "bg-pink-500 border-pink-500"
+                                                        ? "bg-emerald-500 border-emerald-500"
                                                         : "border-slate-300 bg-white"
                                                 )}
                                             >
                                                 {isPregnant && <Check className="w-3 h-3 text-white" />}
                                             </div>
                                             <span className="text-slate-700 font-medium flex items-center gap-2">
-                                                <Baby className="w-4 h-4 text-pink-400" /> Je suis enceinte
+                                                <Baby className="w-4 h-4 text-emerald-500" /> Je suis enceinte
                                             </span>
                                         </div>
                                     </motion.div>
@@ -416,7 +438,7 @@ export const VaccinationAssistant = () => {
                             onClick={calculateRecommendations}
                             className={cn(
                                 "w-full py-4 rounded-2xl text-white font-semibold text-lg shadow-lg transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-h-[60px]",
-                                isPregnant ? "bg-pink-500 hover:bg-pink-600 shadow-pink-200" : "bg-emerald-500 hover:bg-emerald-600 shadow-emerald-200"
+                                "bg-emerald-500 hover:bg-emerald-600 shadow-emerald-200"
                             )}
                         >
                             Voir mes vaccins
@@ -430,25 +452,46 @@ export const VaccinationAssistant = () => {
                         className="w-full"
                     >
                         {/* The Pharmacy Pass Card */}
-                        <div className={cn("bg-white rounded-[32px] shadow-2xl overflow-hidden border-2 relative transition-colors duration-500", isPregnant ? "border-pink-200" : "border-emerald-200")}>
+                        <motion.div
+                            whileHover={{ y: -4 }}
+                            className="bg-white/95 backdrop-blur-md rounded-[32px] shadow-2xl overflow-hidden border-2 border-emerald-200 relative transition-all duration-500"
+                        >
                             {/* Header Strip */}
-                            <div className={cn("h-3 w-full", isPregnant ? "bg-pink-400" : "bg-emerald-400")} />
+                            <div className="h-3 w-full bg-emerald-400" />
 
                             <div className="p-8 space-y-6">
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <h2 className="text-xl font-bold text-slate-900">Mémmo Vaccin</h2>
-                                        <p className="text-slate-400 text-xs uppercase tracking-wider font-semibold mt-1">Pass Santé Personnel</p>
+                                        <p className="text-slate-400 text-[10px] uppercase tracking-[0.2em] font-black mt-1">Pass Santé Personnel</p>
                                     </div>
-                                    <div className={cn("p-2 rounded-xl", isPregnant ? "bg-pink-50" : "bg-emerald-50")}>
-                                        <ShieldCheck className={cn("w-6 h-6", isPregnant ? "text-pink-500" : "text-emerald-500")} />
+                                    <div className="p-2.5 rounded-2xl bg-emerald-50 shadow-inner">
+                                        <ShieldCheck className="w-6 h-6 text-emerald-500" />
                                     </div>
                                 </div>
 
-                                <div className="space-y-4 my-6">
+                                {/* Profile Summary Badge */}
+                                <div className="flex flex-wrap gap-2 pt-2">
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold border border-slate-200">
+                                        <Calendar className="w-3 h-3" />
+                                        {age} ans
+                                    </div>
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold border border-slate-200 uppercase">
+                                        <User className="w-3 h-3" />
+                                        {sex === "female" ? "Femme" : "Homme"}
+                                    </div>
+                                    {isPregnant && (
+                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold border border-emerald-200">
+                                            <Baby className="w-3 h-3" />
+                                            Enceinte
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="space-y-4 my-8">
                                     {recommendations.length > 0 ? (
                                         recommendations.map((rec, i) => (
-                                            <RecommendationItem key={i} rec={rec} />
+                                            <RecommendationItem key={i} rec={rec} index={i} />
                                         ))
                                     ) : (
                                         <div className="text-slate-500 text-center py-4">
@@ -459,24 +502,82 @@ export const VaccinationAssistant = () => {
                                 </div>
 
                                 <div className="pt-6 border-t border-dashed border-slate-200">
-                                    <div className={cn("rounded-xl p-4 text-center font-medium", isPregnant ? "bg-pink-50 text-pink-900" : "bg-emerald-50 text-emerald-900")}>
-                                        Une hésitation ?
+                                    <div className="rounded-2xl p-5 text-center font-medium bg-gradient-to-br from-emerald-50 to-white text-emerald-900 border border-emerald-100/50">
+                                        <div className="inline-flex items-center gap-2 mb-1 text-emerald-600">
+                                            <Info className="w-4 h-4" />
+                                            <span className="text-xs font-black uppercase tracking-widest">Conseil Pharmacie</span>
+                                        </div>
                                         <br />
-                                        <span className="font-bold">Votre pharmacien saura exactement quoi faire en voyant cette liste.</span>
+                                        <span className="font-bold text-sm">Votre pharmacien saura exactement quoi faire en voyant cette liste.</span>
                                     </div>
                                 </div>
                             </div>
+                        </motion.div>
+
+                        <div className="mt-6 flex flex-col gap-3">
+                            <button
+                                onClick={() => setShowResult(false)}
+                                className="w-full text-slate-500 hover:text-slate-800 text-sm font-medium py-2"
+                            >
+                                Faire une nouvelle simulation
+                            </button>
                         </div>
 
-                        <button
-                            onClick={() => setShowResult(false)}
-                            className="mt-6 w-full text-slate-400 hover:text-slate-600 text-sm font-medium py-4"
-                        >
-                            Faire une nouvelle simulation
-                        </button>
+                        {/* Disclaimer & Source */}
+                        <div className="mt-8 text-center space-y-4">
+                            <div className="relative py-4">
+                                <div className="absolute inset-0 flex items-center">
+                                    <span className="w-full border-t border-slate-200" />
+                                </div>
+                                <div className="relative flex justify-center text-xs uppercase">
+                                    <span className="bg-slate-50 px-2 text-slate-400 font-semibold">Source Officielle</span>
+                                </div>
+                            </div>
+
+                            <p className="text-xs text-slate-400 italic max-w-sm mx-auto leading-relaxed">
+                                Cette simulation est basée sur le calendrier vaccinal général français en vigueur.
+                                Seul un professionnel de santé peut valider votre statut vaccinal complet en fonction de vos antécédents médicaux personnels.
+                            </p>
+
+                            <div className="flex flex-col gap-2 items-center">
+                                <a
+                                    href="https://www.service-public.fr/particuliers/vosdroits/F704"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-fit"
+                                >
+                                    Service-Public.fr (Calendrier Officiel)
+                                    <ExternalLink className="w-3 h-3" />
+                                </a>
+                                <a
+                                    href="https://www.has-sante.fr/jcms/p_3511874/fr/la-has-propose-une-nouvelle-strategie-de-vaccination-contre-les-meningocoques"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-fit"
+                                >
+                                    HAS - Recos Méningocoques B & ACWY (2024)
+                                    <ExternalLink className="w-3 h-3" />
+                                </a>
+                                <a
+                                    href="https://sante.gouv.fr/prevention-en-sante/preserver-sa-sante/vaccination/calendrier-vaccinal"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-fit"
+                                >
+                                    Ministère de la Santé (Calendrier 2024/2025)
+                                    <ExternalLink className="w-3 h-3" />
+                                </a>
+                            </div>
+
+                            <p className="text-[10px] text-slate-300 mt-4 leading-relaxed">
+                                Mis à jour pour le calendrier vaccinal {new Date().getFullYear()}
+                            </p>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+
         </div >
     );
 };
