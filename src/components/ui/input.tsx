@@ -27,7 +27,7 @@ const letterVariants = {
     },
     animate: {
         y: -25, // Fixed pixel value ensures icon and text move the same distance
-        color: "#059669", // emerald-600
+        color: "#5F8D77", // Sage
         transition: {
             type: "spring" as const,
             stiffness: 300,
@@ -53,7 +53,7 @@ export const Input = ({
                 variants={containerVariants}
                 initial="initial"
                 animate={showLabel ? "animate" : "initial"}
-                className="absolute top-1/2 -translate-y-1/2 pointer-events-none text-slate-700 font-medium flex items-center text-sm"
+                className="absolute top-1/2 -translate-y-1/2 pointer-events-none text-ink/70 font-medium flex items-center text-sm"
             >
                 {icon && (
                     <motion.span
@@ -81,7 +81,7 @@ export const Input = ({
                 onBlur={() => setIsFocused(false)}
                 value={value}
                 {...props}
-                className="outline-none border-b-2 border-slate-300 dark:border-slate-700 py-2 w-full text-base font-medium text-slate-700 bg-transparent placeholder-transparent focus:border-emerald-500 transition-colors"
+                className="outline-none border-b-2 border-clay/30 py-2 w-full text-base font-medium text-ink bg-transparent placeholder-transparent focus:border-sage transition-colors"
             />
         </div>
     );

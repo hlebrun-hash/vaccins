@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-export default function KineticDotsLoader() {
+export default function KineticDotsLoader({ color = '#5F8D77' }: { color?: string }) {
     const dots = 3; // 3 dots is usually enough for a loading state to feel snappy
 
     return (
@@ -23,9 +23,10 @@ export default function KineticDotsLoader() {
                             }}
                         >
                             <div
-                                className='w-full h-full rounded-full bg-gradient-to-b from-emerald-300 to-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]'
+                                className='w-full h-full rounded-full'
                                 style={{
-                                    // Simplified morph for cleaner look
+                                    backgroundColor: color,
+                                    boxShadow: `0 0 10px ${color}66`,
                                     willChange: 'transform'
                                 }}
                             />
@@ -33,8 +34,10 @@ export default function KineticDotsLoader() {
 
                         {/* 3. REFLECTIVE SHADOW */}
                         <div
-                            className='absolute -bottom-1 w-4 h-1 rounded-[100%] bg-emerald-500/20 blur-[2px]'
+                            className='absolute -bottom-1 w-4 h-1 rounded-[100%] blur-[2px]'
                             style={{
+                                backgroundColor: color,
+                                opacity: 0.2,
                                 animation: 'shadow-breathe 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67) infinite alternate',
                                 animationDelay: `${i * 0.1}s`,
                             }}

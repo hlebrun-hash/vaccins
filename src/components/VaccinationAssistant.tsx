@@ -31,25 +31,25 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
             <div className="flex gap-4 items-start">
                 <div className={cn(
                     "mt-1 min-w-[32px] h-[32px] rounded-full flex items-center justify-center transition-colors duration-300",
-                    rec.urgent ? "bg-amber-100 text-amber-600" : "bg-emerald-100 text-emerald-600"
+                    rec.urgent ? "bg-amber-100 text-amber-600" : "bg-sage/10 text-sage"
                 )}>
                     <Syringe className="w-4 h-4" />
                 </div>
                 <div className="flex-1">
                     <div className="flex justify-between items-start gap-2">
-                        <h3 className="font-semibold text-slate-800 text-lg leading-tight group-hover:text-emerald-600 transition-colors">
+                        <h3 className="font-semibold text-ink text-lg leading-tight group-hover:text-sage transition-colors">
                             {rec.vaccine}
                         </h3>
                         {rec.description && (
                             <motion.div
                                 animate={{ rotate: isOpen ? 180 : 0 }}
-                                className="text-slate-300 group-hover:text-emerald-400 transition-colors mt-0.5"
+                                className="text-ink/30 group-hover:text-sage/50 transition-colors mt-0.5"
                             >
                                 <ChevronDown className="w-5 h-5" />
                             </motion.div>
                         )}
                     </div>
-                    <p className="text-slate-500 text-sm mt-1 font-medium">{rec.reason}</p>
+                    <p className="text-ink/60 text-sm mt-1 font-medium">{rec.reason}</p>
 
                     <AnimatePresence>
                         {isOpen && rec.description && (
@@ -59,7 +59,7 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
                                 exit={{ height: 0, opacity: 0 }}
                                 className="overflow-hidden"
                             >
-                                <p className="text-slate-600 text-sm mt-3 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <p className="text-ink/80 text-sm mt-3 leading-relaxed bg-cream p-3 rounded-xl border border-clay/20">
                                     {rec.description}
                                 </p>
                             </motion.div>
@@ -67,8 +67,8 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
                     </AnimatePresence>
 
                     {rec.pharmacistPrescribable && (
-                        <div className="inline-flex items-center gap-1.5 mt-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-100">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <div className="inline-flex items-center gap-1.5 mt-2 bg-sage/5 text-sage px-3 py-1 rounded-full text-xs font-semibold border border-sage/10">
+                            <div className="w-1.5 h-1.5 rounded-full bg-sage animate-pulse" />
                             Dispo sans ordonnance médecin
                         </div>
                     )}
@@ -321,8 +321,8 @@ export const VaccinationAssistant = () => {
                         exit={{ opacity: 0, scale: 0.9 }}
                         className="flex flex-col items-center justify-center min-h-[400px]"
                     >
-                        <KineticDotsLoader />
-                        <p className="text-slate-500 font-medium mt-4 animate-pulse">
+                        <KineticDotsLoader color="var(--sage)" />
+                        <p className="text-ink/50 font-medium mt-4 animate-pulse">
                             Analyse de votre profil...
                         </p>
                     </motion.div>
@@ -332,13 +332,13 @@ export const VaccinationAssistant = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="space-y-8 bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-xl border border-slate-100"
+                        className="space-y-8 bg-white p-8 rounded-3xl shadow-xl border border-cream"
                     >
                         <div className="text-center space-y-4 mb-8">
-                            <h1 className="text-2xl font-bold text-slate-900">
+                            <h1 className="text-2xl font-bold text-ink">
                                 Vaccin de la pharmacie du marché
                             </h1>
-                            <p className="text-slate-600 text-sm leading-relaxed">
+                            <p className="text-ink/70 text-sm leading-relaxed">
                                 Faites le point sur votre santé, l'esprit tranquille. En quelques secondes, vérifiez si vous ou vos proches êtes à jour, selon le calendrier officiel français.
                             </p>
                         </div>
@@ -349,7 +349,7 @@ export const VaccinationAssistant = () => {
                             <div className="pt-2">
                                 <Input
                                     label="Votre âge"
-                                    icon={<Calendar className="w-4 h-4 text-emerald-500" />}
+                                    icon={<Calendar className="w-4 h-4 text-sage" />}
                                     value={age === "" ? "" : String(age)}
                                     type="number"
                                     onChange={(e) => {
@@ -357,14 +357,14 @@ export const VaccinationAssistant = () => {
                                         if (typeof val === "number" && val > 150) return; // Basic sanity check
                                         setAge(val);
                                     }}
-                                    className="border-slate-300 text-slate-800 focus:border-emerald-500"
+                                    className="border-clay/30 text-ink focus:border-sage"
                                 />
                             </div>
 
                             {/* Sex Selection */}
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-                                    <User className="w-4 h-4 text-emerald-500" />
+                                <label className="text-sm font-medium text-ink/80 flex items-center gap-2">
+                                    <User className="w-4 h-4 text-sage" />
                                     Sexe
                                 </label>
                                 <div className="flex gap-4">
@@ -373,8 +373,8 @@ export const VaccinationAssistant = () => {
                                         className={cn(
                                             "flex-1 p-4 rounded-2xl border-2 transition-all duration-300 flex justify-center items-center gap-2 text-sm font-bold",
                                             sex === "female"
-                                                ? "bg-emerald-50 border-emerald-500 text-emerald-700 shadow-md"
-                                                : "bg-white border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-slate-50"
+                                                ? "bg-sage/5 border-sage text-sage shadow-md"
+                                                : "bg-white border-clay/20 text-ink/60 hover:border-sage/40 hover:bg-cream/50"
                                         )}
                                     >
                                         {sex === "female" && <Check className="w-4 h-4" />}
@@ -385,8 +385,8 @@ export const VaccinationAssistant = () => {
                                         className={cn(
                                             "flex-1 p-4 rounded-2xl border-2 transition-all duration-300 flex justify-center items-center gap-2 text-sm font-bold",
                                             sex === "male"
-                                                ? "bg-emerald-50 border-emerald-500 text-emerald-700 shadow-md"
-                                                : "bg-white border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-slate-50"
+                                                ? "bg-sage/5 border-sage text-sage shadow-md"
+                                                : "bg-white border-clay/20 text-ink/60 hover:border-sage/40 hover:bg-cream/50"
                                         )}
                                     >
                                         {sex === "male" && <Check className="w-4 h-4" />}
@@ -409,22 +409,22 @@ export const VaccinationAssistant = () => {
                                             className={cn(
                                                 "p-4 rounded-2xl border cursor-pointer flex items-center gap-3 transition-colors",
                                                 isPregnant
-                                                    ? "bg-emerald-50 border-emerald-200"
-                                                    : "bg-slate-50 border-transparent hover:bg-slate-100"
+                                                    ? "bg-clay/10 border-clay/30"
+                                                    : "bg-cream border-transparent hover:bg-clay/5"
                                             )}
                                         >
                                             <div
                                                 className={cn(
                                                     "w-5 h-5 rounded-full border flex items-center justify-center transition-colors",
                                                     isPregnant
-                                                        ? "bg-emerald-500 border-emerald-500"
-                                                        : "border-slate-300 bg-white"
+                                                        ? "bg-clay border-clay"
+                                                        : "border-clay/40 bg-white"
                                                 )}
                                             >
                                                 {isPregnant && <Check className="w-3 h-3 text-white" />}
                                             </div>
-                                            <span className="text-slate-700 font-medium flex items-center gap-2">
-                                                <Baby className="w-4 h-4 text-emerald-500" /> Je suis enceinte
+                                            <span className="text-ink font-medium flex items-center gap-2">
+                                                <Baby className="w-4 h-4 text-clay" /> Je suis enceinte
                                             </span>
                                         </div>
                                     </motion.div>
@@ -438,7 +438,7 @@ export const VaccinationAssistant = () => {
                             onClick={calculateRecommendations}
                             className={cn(
                                 "w-full py-4 rounded-2xl text-white font-semibold text-lg shadow-lg transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-h-[60px]",
-                                "bg-emerald-500 hover:bg-emerald-600 shadow-emerald-200"
+                                "bg-sage hover:bg-sage/90 shadow-sage/20"
                             )}
                         >
                             Voir mes vaccins
@@ -454,34 +454,34 @@ export const VaccinationAssistant = () => {
                         {/* The Pharmacy Pass Card */}
                         <motion.div
                             whileHover={{ y: -4 }}
-                            className="bg-white/95 backdrop-blur-md rounded-[32px] shadow-2xl overflow-hidden border-2 border-emerald-200 relative transition-all duration-500"
+                            className="bg-white rounded-[32px] shadow-2xl overflow-hidden border-2 border-sage/10 relative transition-all duration-500"
                         >
                             {/* Header Strip */}
-                            <div className="h-3 w-full bg-emerald-400" />
+                            <div className="h-3 w-full bg-sage" />
 
                             <div className="p-8 space-y-6">
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <h2 className="text-xl font-bold text-slate-900">Mémmo Vaccin</h2>
-                                        <p className="text-slate-400 text-[10px] uppercase tracking-[0.2em] font-black mt-1">Pass Santé Personnel</p>
+                                        <h2 className="text-xl font-bold text-ink">Mémmo Vaccin</h2>
+                                        <p className="text-ink/40 text-[10px] uppercase tracking-[0.2em] font-black mt-1">Pass Santé Personnel</p>
                                     </div>
-                                    <div className="p-2.5 rounded-2xl bg-emerald-50 shadow-inner">
-                                        <ShieldCheck className="w-6 h-6 text-emerald-500" />
+                                    <div className="p-2.5 rounded-2xl bg-sage/5 shadow-inner">
+                                        <ShieldCheck className="w-6 h-6 text-sage" />
                                     </div>
                                 </div>
 
                                 {/* Profile Summary Badge */}
                                 <div className="flex flex-wrap gap-2 pt-2">
-                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold border border-slate-200">
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream text-ink/60 rounded-full text-xs font-bold border border-clay/20">
                                         <Calendar className="w-3 h-3" />
                                         {age} ans
                                     </div>
-                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold border border-slate-200 uppercase">
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream text-ink/60 rounded-full text-xs font-bold border border-clay/20 uppercase">
                                         <User className="w-3 h-3" />
                                         {sex === "female" ? "Femme" : "Homme"}
                                     </div>
                                     {isPregnant && (
-                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold border border-emerald-200">
+                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-clay/10 text-clay rounded-full text-xs font-bold border border-clay/20">
                                             <Baby className="w-3 h-3" />
                                             Enceinte
                                         </div>
@@ -501,9 +501,9 @@ export const VaccinationAssistant = () => {
                                     )}
                                 </div>
 
-                                <div className="pt-6 border-t border-dashed border-slate-200">
-                                    <div className="rounded-2xl p-5 text-center font-medium bg-gradient-to-br from-emerald-50 to-white text-emerald-900 border border-emerald-100/50">
-                                        <div className="inline-flex items-center gap-2 mb-1 text-emerald-600">
+                                <div className="pt-6 border-t border-dashed border-clay/20">
+                                    <div className="rounded-2xl p-5 text-center font-medium bg-cream text-ink border border-clay/20">
+                                        <div className="inline-flex items-center gap-2 mb-1 text-sage">
                                             <Info className="w-4 h-4" />
                                             <span className="text-xs font-black uppercase tracking-widest">Conseil Pharmacie</span>
                                         </div>
@@ -517,7 +517,7 @@ export const VaccinationAssistant = () => {
                         <div className="mt-6 flex flex-col gap-3">
                             <button
                                 onClick={() => setShowResult(false)}
-                                className="w-full text-slate-500 hover:text-slate-800 text-sm font-medium py-2"
+                                className="w-full text-ink/40 hover:text-ink/80 text-sm font-medium py-2 transition-colors"
                             >
                                 Faire une nouvelle simulation
                             </button>
@@ -527,10 +527,10 @@ export const VaccinationAssistant = () => {
                         <div className="mt-8 text-center space-y-4">
                             <div className="relative py-4">
                                 <div className="absolute inset-0 flex items-center">
-                                    <span className="w-full border-t border-slate-200" />
+                                    <span className="w-full border-t border-clay/20" />
                                 </div>
                                 <div className="relative flex justify-center text-xs uppercase">
-                                    <span className="bg-slate-50 px-2 text-slate-400 font-semibold">Source Officielle</span>
+                                    <span className="bg-cream px-2 text-ink/30 font-semibold tracking-wider">Source Officielle</span>
                                 </div>
                             </div>
 
@@ -544,7 +544,7 @@ export const VaccinationAssistant = () => {
                                     href="https://www.service-public.fr/particuliers/actualites/A17726"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-full justify-center"
+                                    className="inline-flex items-center gap-2 text-sage font-bold text-xs hover:text-sage/80 transition-colors p-2 bg-sage/5 rounded-lg w-full justify-center"
                                 >
                                     Actualités 2025 (Service-Public.fr)
                                     <ExternalLink className="w-3 h-3" />
@@ -553,7 +553,7 @@ export const VaccinationAssistant = () => {
                                     href="https://sante.gouv.fr/prevention-en-sante/preserver-sa-sante/vaccination/calendrier-vaccinal"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-full justify-center"
+                                    className="inline-flex items-center gap-2 text-sage font-bold text-xs hover:text-sage/80 transition-colors p-2 bg-sage/5 rounded-lg w-full justify-center"
                                 >
                                     Calendrier Ministériel 2025
                                     <ExternalLink className="w-3 h-3" />
@@ -562,27 +562,27 @@ export const VaccinationAssistant = () => {
                                     href="https://www.ameli.fr/assure/sante/themes/vaccination/calendrier-vaccinal"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-full justify-center"
+                                    className="inline-flex items-center gap-2 text-sage font-bold text-xs hover:text-sage/80 transition-colors p-2 bg-sage/5 rounded-lg w-full justify-center"
                                 >
                                     Consulter sur Ameli.fr
                                     <ExternalLink className="w-3 h-3" />
                                 </a>
                             </div>
 
-                            <div className="mt-8 pt-6 border-t border-slate-100">
+                            <div className="mt-8 pt-6 border-t border-clay/10">
                                 <button
                                     onClick={() => {
                                         navigator.clipboard.writeText(window.location.href);
                                         alert("Lien copié !");
                                     }}
-                                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-slate-800 transition-colors shadow-lg"
+                                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-ink text-cream rounded-2xl font-bold text-sm hover:bg-ink/90 transition-colors shadow-lg"
                                 >
                                     <ExternalLink className="w-4 h-4" />
                                     Partager ce lien
                                 </button>
                             </div>
 
-                            <p className="text-[10px] text-slate-300 mt-4 leading-relaxed">
+                            <p className="text-[10px] text-ink/20 mt-4 leading-relaxed">
                                 Mis à jour pour le calendrier vaccinal {new Date().getFullYear()}
                             </p>
                         </div>

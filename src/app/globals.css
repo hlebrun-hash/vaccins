@@ -3,6 +3,12 @@
 @theme {
   --animate-aurora: aurora 60s linear infinite;
 
+  /* New Brand Colors */
+  --color-cream: #FDFBF7;
+  --color-sage: #5F8D77;
+  --color-ink: #2D3436;
+  --color-clay: #E0C0B0;
+
   @keyframes aurora {
     from {
       background-position: 50% 50%, 50% 50%;
@@ -15,38 +21,37 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FDFBF7;
+  /* Crème de Lait */
+  --foreground: #2D3436;
+  /* Encre Chaude */
 
-  /* Ultra White / Pharmacie Clean Palette */
-  --white: #ffffff;
-  --black: #000000;
-  --transparent: transparent;
-
-  /* More visible tints for the aurora effect, still very soft */
-  --blue-300: #ccfbf1;
-  /* teal-100 */
-  --blue-400: #e0f2fe;
-  /* sky-100 */
-  --blue-500: #f1f5f9;
-  /* slate-100 */
-  --indigo-300: #dcfce7;
-  /* green-100 */
-  --violet-200: #f5f3ff;
-  /* violet-100 */
+  /* Tailored Aurora Tints - very subtle to match the cream theme */
+  --blue-300: #F3EFE9;
+  /* Slightly darker cream */
+  --blue-400: #E7EDEA;
+  /* Very light sage tint */
+  --blue-500: #FDFBF7;
+  /* Base cream */
+  --indigo-300: #F7E9E2;
+  /* Very light clay tint */
+  --violet-200: #FDFBF7;
+  /* Neutral transition */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark mode kept as deep emerald for contrast if system switches */
-    --background: #022c22;
-    --foreground: #ecfdf5;
+    /* Keep a dark version but still using the brand colors */
+    --background: #1A1F20;
+    /* Darker ink */
+    --foreground: #FDFBF7;
+    /* Cream text */
   }
 }
 
 .dark {
-  --background: #022c22;
-  --foreground: #ecfdf5;
+  --background: #1A1F20;
+  --foreground: #FDFBF7;
 }
 
 body {
