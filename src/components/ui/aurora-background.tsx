@@ -14,15 +14,15 @@ export const AuroraBackground = ({
     ...props
 }: AuroraBackgroundProps) => {
     return (
-        <main>
+        <main className="w-full">
             <div
                 className={cn(
-                    "relative flex flex-col  min-h-screen items-center justify-center bg-white dark:bg-emerald-950 text-slate-950 transition-bg",
+                    "relative flex flex-col min-h-screen min-h-[100dvh] items-center justify-center bg-white dark:bg-emerald-950 text-slate-950 transition-bg overflow-hidden",
                     className
                 )}
                 {...props}
             >
-                <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div
                         className={cn(
                             `
@@ -33,20 +33,21 @@ export const AuroraBackground = ({
             dark:[background-image:var(--dark-gradient),var(--aurora)]
             [background-size:300%,_200%]
             [background-position:50%_50%,50%_50%]
-            filter blur-[10px] invert dark:invert-0
+            filter blur-[12px]
             after:content-[""] after:absolute after:inset-0 after:[background-image:var(--white-gradient),var(--aurora)] 
             after:dark:[background-image:var(--dark-gradient),var(--aurora)]
             after:[background-size:200%,_100%] 
-            after:animate-aurora after:[background-attachment:fixed] after:mix-blend-difference
-            pointer-events-none
-            absolute -inset-[10px] opacity-30 will-change-transform`,
+            after:animate-aurora after:mix-blend-multiply dark:after:mix-blend-difference
+            absolute -inset-[10px] opacity-70 will-change-transform transform-gpu`,
 
                             showRadialGradient &&
-                            `[mask-image:radial-gradient(ellipse_at_100%_0%,black_10%,var(--transparent)_70%)]`
+                            `[mask-image:radial-gradient(ellipse_at_100%_0%,black_30%,var(--transparent)_70%)] [webkit-mask-image:radial-gradient(ellipse_at_100%_0%,black_30%,var(--transparent)_70%)]`
                         )}
                     ></div>
                 </div>
-                {children}
+                <div className="relative z-10 w-full flex flex-col items-center">
+                    {children}
+                </div>
             </div>
         </main>
     );

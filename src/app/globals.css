@@ -23,17 +23,17 @@
   --black: #000000;
   --transparent: transparent;
 
-  /* Extremely subtle tints, almost imperceptible from white */
-  --blue-300: #f0fdfa;
-  /* teal-50 */
-  --blue-400: #f0f9ff;
-  /* sky-50 */
-  --blue-500: #f8fafc;
-  /* slate-50 */
-  --indigo-300: #f0fdf4;
-  /* green-50 */
-  --violet-200: #fafaf9;
-  /* stone-50 */
+  /* More visible tints for the aurora effect, still very soft */
+  --blue-300: #ccfbf1;
+  /* teal-100 */
+  --blue-400: #e0f2fe;
+  /* sky-100 */
+  --blue-500: #f1f5f9;
+  /* slate-100 */
+  --indigo-300: #dcfce7;
+  /* green-100 */
+  --violet-200: #f5f3ff;
+  /* violet-100 */
 }
 
 @media (prefers-color-scheme: dark) {

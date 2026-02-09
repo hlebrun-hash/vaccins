@@ -541,32 +541,45 @@ export const VaccinationAssistant = () => {
 
                             <div className="flex flex-col gap-2 items-center">
                                 <a
-                                    href="https://www.service-public.fr/particuliers/vosdroits/F704"
+                                    href="https://www.service-public.fr/particuliers/actualites/A17726"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-fit"
+                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-full justify-center"
                                 >
-                                    Service-Public.fr (Calendrier Officiel)
-                                    <ExternalLink className="w-3 h-3" />
-                                </a>
-                                <a
-                                    href="https://www.has-sante.fr/jcms/p_3511874/fr/la-has-propose-une-nouvelle-strategie-de-vaccination-contre-les-meningocoques"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-fit"
-                                >
-                                    HAS - Recos Méningocoques B & ACWY (2024)
+                                    Actualités 2025 (Service-Public.fr)
                                     <ExternalLink className="w-3 h-3" />
                                 </a>
                                 <a
                                     href="https://sante.gouv.fr/prevention-en-sante/preserver-sa-sante/vaccination/calendrier-vaccinal"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-fit"
+                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-full justify-center"
                                 >
-                                    Ministère de la Santé (Calendrier 2024/2025)
+                                    Calendrier Ministériel 2025
                                     <ExternalLink className="w-3 h-3" />
                                 </a>
+                                <a
+                                    href="https://www.ameli.fr/assure/sante/themes/vaccination/calendrier-vaccinal"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs hover:text-emerald-700 transition-colors p-2 bg-emerald-50/50 rounded-lg hover:bg-emerald-50 w-full justify-center"
+                                >
+                                    Consulter sur Ameli.fr
+                                    <ExternalLink className="w-3 h-3" />
+                                </a>
+                            </div>
+
+                            <div className="mt-8 pt-6 border-t border-slate-100">
+                                <button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(window.location.href);
+                                        alert("Lien copié !");
+                                    }}
+                                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-slate-800 transition-colors shadow-lg"
+                                >
+                                    <ExternalLink className="w-4 h-4" />
+                                    Partager ce lien
+                                </button>
                             </div>
 
                             <p className="text-[10px] text-slate-300 mt-4 leading-relaxed">
