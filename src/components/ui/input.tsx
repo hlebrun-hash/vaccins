@@ -27,7 +27,7 @@ const letterVariants = {
     },
     animate: {
         y: -25, // Fixed pixel value ensures icon and text move the same distance
-        color: "#5F8D77", // Sage
+        color: "#7A8258", // Olive Green
         transition: {
             type: "spring" as const,
             stiffness: 300,

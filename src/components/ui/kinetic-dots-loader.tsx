@@ -2,8 +2,8 @@
 
 import { cn } from "@/lib/utils";
 
-export default function KineticDotsLoader({ color = '#5F8D77' }: { color?: string }) {
-    const dots = 3; // 3 dots is usually enough for a loading state to feel snappy
+export default function KineticDotsLoader({ color = '#7A8258' }: { color?: string }) {
+    const dots = 3;
 
     return (
         <div className='flex items-center justify-center min-h-[200px] p-8 w-full'>
@@ -45,18 +45,6 @@ export default function KineticDotsLoader({ color = '#5F8D77' }: { color?: strin
                     </div>
                 ))}
             </div>
-
-            <style jsx>{`
-        @keyframes gravity-bounce {
-          from { transform: translateY(0); }
-          to { transform: translateY(-24px); }
-        }
-
-        @keyframes shadow-breathe {
-          from { transform: scale(1); opacity: 0.6; }
-          to { transform: scale(0.5); opacity: 0.2; }
-        }
-      `}</style>
         </div>
     )
 }

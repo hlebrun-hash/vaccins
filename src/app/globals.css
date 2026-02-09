@@ -3,15 +3,15 @@
 @theme {
   --animate-aurora: aurora 60s linear infinite;
 
-  /* Lighter, Luminous Brand Colors */
-  --color-cream: #FFFCF9;
-  /* Silky lighter cream */
-  --color-sage: #7AA18E;
-  /* Softer, lighter sage */
-  --color-ink: #3D4446;
-  /* Warm deep grey, less harsh than black */
-  --color-clay: #EAD4C9;
-  /* Lighter, softer clay */
+  /* "Old Poster" Brand Colors */
+  --color-cream: #F6F4EE;
+  /* Main Paper Background */
+  --color-sage: #7A8258;
+  /* Olive Green Action */
+  --color-ink: #1A1A1A;
+  /* Deep Ink Text */
+  --color-clay: #B09B84;
+  /* Warm Brown/Beige Accent */
 
   @keyframes aurora {
     from {
@@ -25,31 +25,61 @@
 }
 
 :root {
-  --background: #FFFCF9;
-  --foreground: #3D4446;
+  --background: #F6F4EE;
+  --foreground: #1A1A1A;
 
-  /* Ultra-subtle luminous tints */
-  --blue-300: #FBF9F6;
-  --blue-400: #F4F7F5;
-  --blue-500: #FFFCF9;
-  --indigo-300: #F9F3F0;
-  --violet-200: #FFFCF9;
+  /* Visible tone-on-tone warm aurora tints - Slightly darker than background to be visible */
+  --blue-300: #DED9C4;
+  /* Warm grey-beige */
+  --blue-400: #E6DEC9;
+  /* Warm sand */
+  --blue-500: #F6F4EE;
+  /* Base background */
+  --indigo-300: #E0DEC3;
+  /* Slightly olive cream */
+  --violet-200: #F1E9D2;
+  /* Antiqued cream */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #24292A;
-    --foreground: #FFFCF9;
-  }
-}
-
-.dark {
-  --background: #24292A;
-  --foreground: #FFFCF9;
-}
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 100;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+@keyframes gravity-bounce {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-24px);
+  }
+}
+
+@keyframes shadow-breathe {
+  from {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  to {
+    transform: scale(0.5);
+    opacity: 0.2;
+  }
 }

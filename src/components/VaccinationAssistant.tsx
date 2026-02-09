@@ -321,7 +321,7 @@ export const VaccinationAssistant = () => {
                         exit={{ opacity: 0, scale: 0.9 }}
                         className="flex flex-col items-center justify-center min-h-[400px]"
                     >
-                        <KineticDotsLoader color="var(--sage)" />
+                        <KineticDotsLoader color="var(--color-sage)" />
                         <p className="text-ink/50 font-medium mt-4 animate-pulse">
                             Analyse de votre profil...
                         </p>
@@ -472,16 +472,16 @@ export const VaccinationAssistant = () => {
 
                                 {/* Profile Summary Badge */}
                                 <div className="flex flex-wrap gap-2 pt-2">
-                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream text-ink/60 rounded-full text-xs font-bold border border-clay/20">
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream/50 text-ink/60 rounded-full text-xs font-bold border border-clay/30">
                                         <Calendar className="w-3 h-3" />
                                         {age} ans
                                     </div>
-                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream text-ink/60 rounded-full text-xs font-bold border border-clay/20 uppercase">
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream/50 text-ink/60 rounded-full text-xs font-bold border border-clay/30 uppercase">
                                         <User className="w-3 h-3" />
                                         {sex === "female" ? "Femme" : "Homme"}
                                     </div>
                                     {isPregnant && (
-                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-clay/10 text-clay rounded-full text-xs font-bold border border-clay/20">
+                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-clay/20 text-ink rounded-full text-xs font-bold border border-clay/40">
                                             <Baby className="w-3 h-3" />
                                             Enceinte
                                         </div>
@@ -501,8 +501,8 @@ export const VaccinationAssistant = () => {
                                     )}
                                 </div>
 
-                                <div className="pt-6 border-t border-dashed border-clay/20">
-                                    <div className="rounded-2xl p-5 text-center font-medium bg-cream text-ink border border-clay/20">
+                                <div className="pt-6 border-t border-dashed border-clay/40">
+                                    <div className="rounded-2xl p-5 text-center font-medium bg-sage/5 text-ink border border-sage/20">
                                         <div className="inline-flex items-center gap-2 mb-1 text-sage">
                                             <Info className="w-4 h-4" />
                                             <span className="text-xs font-black uppercase tracking-widest">Conseil Pharmacie</span>
