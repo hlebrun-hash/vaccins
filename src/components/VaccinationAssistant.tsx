@@ -43,13 +43,13 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
                         {rec.description && (
                             <motion.div
                                 animate={{ rotate: isOpen ? 180 : 0 }}
-                                className="text-ink/30 group-hover:text-sage/50 transition-colors mt-0.5"
+                                className="text-ink/60 group-hover:text-sage/80 transition-colors mt-0.5"
                             >
                                 <ChevronDown className="w-5 h-5" />
                             </motion.div>
                         )}
                     </div>
-                    <p className="text-ink/60 text-sm mt-1 font-medium">{rec.reason}</p>
+                    <p className="text-ink text-sm mt-1 font-bold">{rec.reason}</p>
 
                     <AnimatePresence>
                         {isOpen && rec.description && (
@@ -59,7 +59,7 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
                                 exit={{ height: 0, opacity: 0 }}
                                 className="overflow-hidden"
                             >
-                                <p className="text-ink/80 text-sm mt-3 leading-relaxed bg-cream p-3 rounded-xl border border-clay/20">
+                                <p className="text-ink text-sm mt-3 leading-relaxed bg-cream/80 p-3 rounded-xl border border-clay/40 font-medium">
                                     {rec.description}
                                 </p>
                             </motion.div>
@@ -322,7 +322,7 @@ export const VaccinationAssistant = () => {
                         className="flex flex-col items-center justify-center min-h-[400px]"
                     >
                         <KineticDotsLoader color="var(--color-sage)" />
-                        <p className="text-ink/50 font-medium mt-4 animate-pulse">
+                        <p className="text-ink/80 font-bold mt-4 animate-pulse">
                             Analyse de votre profil...
                         </p>
                     </motion.div>
@@ -338,7 +338,7 @@ export const VaccinationAssistant = () => {
                             <h1 className="text-2xl font-bold text-ink">
                                 Vaccin de la pharmacie du marché
                             </h1>
-                            <p className="text-ink/70 text-sm leading-relaxed">
+                            <p className="text-ink text-sm leading-relaxed font-medium">
                                 Faites le point sur votre santé, l'esprit tranquille. En quelques secondes, vérifiez si vous ou vos proches êtes à jour, selon le calendrier officiel français.
                             </p>
                         </div>
@@ -363,7 +363,7 @@ export const VaccinationAssistant = () => {
 
                             {/* Sex Selection */}
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-ink/80 flex items-center gap-2">
+                                <label className="text-sm font-bold text-ink flex items-center gap-2">
                                     <User className="w-4 h-4 text-sage" />
                                     Sexe
                                 </label>
@@ -373,8 +373,8 @@ export const VaccinationAssistant = () => {
                                         className={cn(
                                             "flex-1 p-4 rounded-2xl border-2 transition-all duration-300 flex justify-center items-center gap-2 text-sm font-bold",
                                             sex === "female"
-                                                ? "bg-sage/5 border-sage text-sage shadow-md"
-                                                : "bg-white border-clay/20 text-ink/60 hover:border-sage/40 hover:bg-cream/50"
+                                                ? "bg-sage/10 border-sage text-sage shadow-md"
+                                                : "bg-white border-clay/30 text-ink/80 hover:border-sage/40 hover:bg-cream/50"
                                         )}
                                     >
                                         {sex === "female" && <Check className="w-4 h-4" />}
@@ -460,23 +460,23 @@ export const VaccinationAssistant = () => {
                             <div className="h-3 w-full bg-sage" />
 
                             <div className="p-8 space-y-6">
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <h2 className="text-xl font-bold text-ink">Mémmo Vaccin</h2>
-                                        <p className="text-ink/40 text-[10px] uppercase tracking-[0.2em] font-black mt-1">Pass Santé Personnel</p>
-                                    </div>
-                                    <div className="p-2.5 rounded-2xl bg-sage/5 shadow-inner">
+                                <div className="flex flex-col items-center text-center space-y-2">
+                                    <div className="p-2.5 rounded-2xl bg-sage/5 shadow-inner mb-2">
                                         <ShieldCheck className="w-6 h-6 text-sage" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-bold text-ink">Vos Vaccins</h2>
+                                        <p className="text-ink/40 text-[10px] uppercase tracking-[0.2em] font-black mt-1">Pass Santé Personnel</p>
                                     </div>
                                 </div>
 
                                 {/* Profile Summary Badge */}
                                 <div className="flex flex-wrap gap-2 pt-2">
-                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream/50 text-ink/60 rounded-full text-xs font-bold border border-clay/30">
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream/50 text-ink/80 rounded-full text-xs font-bold border border-clay/30">
                                         <Calendar className="w-3 h-3" />
                                         {age} ans
                                     </div>
-                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream/50 text-ink/60 rounded-full text-xs font-bold border border-clay/30 uppercase">
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream/50 text-ink/80 rounded-full text-xs font-bold border border-clay/30 uppercase">
                                         <User className="w-3 h-3" />
                                         {sex === "female" ? "Femme" : "Homme"}
                                     </div>
@@ -517,7 +517,7 @@ export const VaccinationAssistant = () => {
                         <div className="mt-6 flex flex-col gap-3">
                             <button
                                 onClick={() => setShowResult(false)}
-                                className="w-full text-ink/40 hover:text-ink/80 text-sm font-medium py-2 transition-colors"
+                                className="w-full text-ink/60 hover:text-ink text-sm font-bold py-2 transition-colors"
                             >
                                 Faire une nouvelle simulation
                             </button>
@@ -575,14 +575,14 @@ export const VaccinationAssistant = () => {
                                         navigator.clipboard.writeText(window.location.href);
                                         alert("Lien copié !");
                                     }}
-                                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-ink text-cream rounded-2xl font-bold text-sm hover:bg-ink/90 transition-colors shadow-lg"
+                                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-ink text-cream rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity shadow-lg"
                                 >
                                     <ExternalLink className="w-4 h-4" />
                                     Partager ce lien
                                 </button>
                             </div>
 
-                            <p className="text-[10px] text-ink/20 mt-4 leading-relaxed">
+                            <p className="text-[10px] text-ink/40 mt-4 leading-relaxed font-medium">
                                 Mis à jour pour le calendrier vaccinal {new Date().getFullYear()}
                             </p>
                         </div>

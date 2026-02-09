@@ -53,7 +53,7 @@ export const Input = ({
                 variants={containerVariants}
                 initial="initial"
                 animate={showLabel ? "animate" : "initial"}
-                className="absolute top-1/2 -translate-y-1/2 pointer-events-none text-ink/70 font-medium flex items-center text-sm"
+                className="absolute top-1/2 -translate-y-1/2 pointer-events-none text-ink font-bold flex items-center text-sm"
             >
                 {icon && (
                     <motion.span
@@ -81,7 +81,7 @@ export const Input = ({
                 onBlur={() => setIsFocused(false)}
                 value={value}
                 {...props}
-                className="outline-none border-b-2 border-clay/30 py-2 w-full text-base font-medium text-ink bg-transparent placeholder-transparent focus:border-sage transition-colors"
+                className="outline-none border-b-2 border-clay/60 py-2 w-full text-base font-bold text-ink bg-transparent placeholder-transparent focus:border-sage transition-colors"
             />
         </div>
     );
