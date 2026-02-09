@@ -1,22 +1,52 @@
 @import "tailwindcss";
 
+@theme {
+  --animate-aurora: aurora 60s linear infinite;
+
+  @keyframes aurora {
+    from {
+      background-position: 50% 50%, 50% 50%;
+    }
+
+    to {
+      background-position: 350% 50%, 350% 50%;
+    }
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Ultra White / Pharmacie Clean Palette */
+  --white: #ffffff;
+  --black: #000000;
+  --transparent: transparent;
+
+  /* Extremely subtle tints, almost imperceptible from white */
+  --blue-300: #f0fdfa;
+  /* teal-50 */
+  --blue-400: #f0f9ff;
+  /* sky-50 */
+  --blue-500: #f8fafc;
+  /* slate-50 */
+  --indigo-300: #f0fdf4;
+  /* green-50 */
+  --violet-200: #fafaf9;
+  /* stone-50 */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Dark mode kept as deep emerald for contrast if system switches */
+    --background: #022c22;
+    --foreground: #ecfdf5;
   }
+}
+
+.dark {
+  --background: #022c22;
+  --foreground: #ecfdf5;
 }
 
 body {
