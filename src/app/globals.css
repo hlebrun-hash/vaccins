@@ -3,11 +3,15 @@
 @theme {
   --animate-aurora: aurora 60s linear infinite;
 
-  /* New Brand Colors */
-  --color-cream: #FDFBF7;
-  --color-sage: #5F8D77;
-  --color-ink: #2D3436;
-  --color-clay: #E0C0B0;
+  /* Lighter, Luminous Brand Colors */
+  --color-cream: #FFFCF9;
+  /* Silky lighter cream */
+  --color-sage: #7AA18E;
+  /* Softer, lighter sage */
+  --color-ink: #3D4446;
+  /* Warm deep grey, less harsh than black */
+  --color-clay: #EAD4C9;
+  /* Lighter, softer clay */
 
   @keyframes aurora {
     from {
@@ -21,37 +25,27 @@
 }
 
 :root {
-  --background: #FDFBF7;
-  /* Crème de Lait */
-  --foreground: #2D3436;
-  /* Encre Chaude */
+  --background: #FFFCF9;
+  --foreground: #3D4446;
 
-  /* Tailored Aurora Tints - very subtle to match the cream theme */
-  --blue-300: #F3EFE9;
-  /* Slightly darker cream */
-  --blue-400: #E7EDEA;
-  /* Very light sage tint */
-  --blue-500: #FDFBF7;
-  /* Base cream */
-  --indigo-300: #F7E9E2;
-  /* Very light clay tint */
-  --violet-200: #FDFBF7;
-  /* Neutral transition */
+  /* Ultra-subtle luminous tints */
+  --blue-300: #FBF9F6;
+  --blue-400: #F4F7F5;
+  --blue-500: #FFFCF9;
+  --indigo-300: #F9F3F0;
+  --violet-200: #FFFCF9;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Keep a dark version but still using the brand colors */
-    --background: #1A1F20;
-    /* Darker ink */
-    --foreground: #FDFBF7;
-    /* Cream text */
+    --background: #24292A;
+    --foreground: #FFFCF9;
   }
 }
 
 .dark {
-  --background: #1A1F20;
-  --foreground: #FDFBF7;
+  --background: #24292A;
+  --foreground: #FFFCF9;
 }
 
 body {
