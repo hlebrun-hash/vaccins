@@ -38,12 +38,14 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
             initial="hidden"
             animate="visible"
             whileHover="hover"
+            whileTap="hover"
             onClick={() => setIsOpen(!isOpen)}
             className="group cursor-pointer select-none rounded-xl p-2 -mx-2 transition-colors"
         >
             <div className="flex gap-4 items-start">
                 <motion.div
                     variants={iconVariants}
+                    whileTap="hover"
                     className={cn(
                         "mt-1 min-w-[32px] h-[32px] rounded-full flex items-center justify-center transition-colors duration-300",
                         rec.obligatory ? "bg-amber-100 text-amber-600" : "bg-sage/10 text-sage"
@@ -587,7 +589,7 @@ export const VaccinationAssistant = () => {
                                 </div>
 
                                 {/* Profile Summary Badge */}
-                                <div className="flex flex-wrap gap-2 pt-2">
+                                <div className="flex flex-wrap gap-2 pt-2 justify-center">
                                     <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream/50 text-ink/80 rounded-full text-xs font-bold border border-clay/30">
                                         <Calendar className="w-3 h-3" />
                                         {age} {ageUnit === "months" ? "mois" : "ans"}
