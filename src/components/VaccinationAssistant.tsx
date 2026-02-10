@@ -21,21 +21,35 @@ interface Recommendation {
 const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number }) => {
     const [isOpen, setIsOpen] = useState(false);
 
+    const cardVariants = {
+        hidden: { opacity: 0, x: -20 },
+        visible: (i: number) => ({ opacity: 1, x: 0, transition: { delay: i * 0.1 } }),
+        hover: { scale: 1.02, backgroundColor: "rgba(0,0,0,0.01)", transition: { duration: 0.2 } }
+    };
+
+    const iconVariants = {
+        hover: { rotate: [0, -20, 20, 0], scale: 1.1, transition: { duration: 0.3 } }
+    };
+
     return (
         <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
+            custom={index}
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
             onClick={() => setIsOpen(!isOpen)}
-            className="group cursor-pointer select-none"
+            className="group cursor-pointer select-none rounded-xl p-2 -mx-2 transition-colors"
         >
             <div className="flex gap-4 items-start">
-                <div className={cn(
-                    "mt-1 min-w-[32px] h-[32px] rounded-full flex items-center justify-center transition-colors duration-300",
-                    rec.obligatory ? "bg-amber-100 text-amber-600" : "bg-sage/10 text-sage"
-                )}>
+                <motion.div
+                    variants={iconVariants}
+                    className={cn(
+                        "mt-1 min-w-[32px] h-[32px] rounded-full flex items-center justify-center transition-colors duration-300",
+                        rec.obligatory ? "bg-amber-100 text-amber-600" : "bg-sage/10 text-sage"
+                    )}>
                     <Syringe className="w-4 h-4" />
-                </div>
+                </motion.div>
                 <div className="flex-1">
                     <div className="flex justify-between items-start gap-2">
                         <h3 className="font-semibold text-ink text-lg leading-tight group-hover:text-sage transition-colors">
