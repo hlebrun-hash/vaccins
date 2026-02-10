@@ -14,6 +14,7 @@ interface Recommendation {
     reason: string;
     description?: string; // New: Detailed description for accordion
     urgent?: boolean;
+    obligatory?: boolean;
     pharmacistPrescribable?: boolean;
 }
 
@@ -31,7 +32,7 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
             <div className="flex gap-4 items-start">
                 <div className={cn(
                     "mt-1 min-w-[32px] h-[32px] rounded-full flex items-center justify-center transition-colors duration-300",
-                    rec.urgent ? "bg-amber-100 text-amber-600" : "bg-sage/10 text-sage"
+                    rec.obligatory ? "bg-amber-100 text-amber-600" : "bg-sage/10 text-sage"
                 )}>
                     <Syringe className="w-4 h-4" />
                 </div>
@@ -59,17 +60,33 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
                                 exit={{ height: 0, opacity: 0 }}
                                 className="overflow-hidden"
                             >
-                                <p className="text-ink text-sm mt-3 leading-relaxed bg-cream/80 p-3 rounded-xl border border-clay/40 font-medium">
+                                <div className="mt-4 mb-2">
+                                    {rec.obligatory ? (
+                                        <span className="inline-block px-2 py-1 bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-wider rounded border border-red-100">
+                                            Vaccin Obligatoire
+                                        </span>
+                                    ) : (
+                                        <span className="inline-block px-2 py-1 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-wider rounded border border-slate-200">
+                                            Vaccin Recommandé
+                                        </span>
+                                    )}
+                                </div>
+                                <p className="text-ink text-sm leading-relaxed bg-cream/80 p-3 rounded-xl border border-clay/40 font-medium">
                                     {rec.description}
                                 </p>
                             </motion.div>
                         )}
                     </AnimatePresence>
 
-                    {rec.pharmacistPrescribable && (
+                    {rec.pharmacistPrescribable ? (
                         <div className="inline-flex items-center gap-1.5 mt-2 bg-sage/5 text-sage px-3 py-1 rounded-full text-xs font-semibold border border-sage/10">
                             <div className="w-1.5 h-1.5 rounded-full bg-sage animate-pulse" />
-                            Dispo sans ordonnance médecin
+                            Disponible sans ordonnance
+                        </div>
+                    ) : (
+                        <div className="inline-flex items-center gap-1.5 mt-2 bg-amber-50 text-amber-600 px-3 py-1 rounded-full text-xs font-semibold border border-amber-100">
+                            <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                            Disponible sur ordonnance
                         </div>
                     )}
                 </div>
@@ -80,6 +97,7 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
 
 export const VaccinationAssistant = () => {
     const [age, setAge] = useState<number | "">("");
+    const [ageUnit, setAgeUnit] = useState<"years" | "months">("years");
     const [sex, setSex] = useState<Sex>(null);
     const [isPregnant, setIsPregnant] = useState(false);
     const [showResult, setShowResult] = useState(false);
@@ -94,6 +112,13 @@ export const VaccinationAssistant = () => {
         setShowResult(false);
     }, [age, sex]);
 
+    // Auto-switch to Years if age > 24
+    useEffect(() => {
+        if (typeof age === "number" && age > 24) {
+            setAgeUnit("years");
+        }
+    }, [age]);
+
     // "The Mistral Brain 2.0": Comprehensive French Vaccination Logic
     const calculateRecommendations = async () => {
         setIsLoading(true);
@@ -101,7 +126,12 @@ export const VaccinationAssistant = () => {
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         const recs: Recommendation[] = [];
-        const numAge = Number(age);
+        const valAge = Number(age);
+
+        // Normalize Age Logic
+        // We use "ageInYears" for general logic and "ageInMonths" for infant precision.
+        const ageInMonths = ageUnit === "months" ? valAge : valAge * 12;
+        const ageInYears = ageUnit === "years" ? valAge : valAge / 12;
 
         if (!age && age !== 0) return;
 
@@ -137,27 +167,63 @@ export const VaccinationAssistant = () => {
         }
 
         // --- NOURRISSONS & ENFANTS (0 - 10 ans) ---
-        if (numAge <= 10) {
-            recs.push({
-                vaccine: "Calendrier Pédiatrique (11 Vaccins)",
-                reason: "DTP, Coqueluche, Hib, Hep B, Pneumocoque, Men B, Men C, ROR.",
-                description: "Depuis 2018, 11 vaccins sont obligatoires pour les enfants. Ils protègent contre des maladies potentiellement graves. Le suivi se fait lors des visites obligatoires chez le médecin.",
-                urgent: true,
-                pharmacistPrescribable: false // Need Doctor
-            });
-
-            if (numAge === 6) {
-                recs.push({ vaccine: "Rappel 6 ans", reason: "DTP + Coqueluche (Indispensable avant le CP).", description: "Ce rappel est crucial avant l'entrée en école primaire pour maintenir l'immunité contre la Diphtérie, le Tétanos, la Polio et la Coqueluche.", pharmacistPrescribable: false });
-            } else if (numAge < 2) {
-                recs.push({ vaccine: "Méningocoque B & C", reason: "Plusieurs doses avant 12 mois.", description: "Les méningites sont des infections foudroyantes. La vaccination précoce protège les bébés contre les souches les plus fréquentes.", pharmacistPrescribable: false });
-                recs.push({ vaccine: "ROR (Rougeole)", reason: "Dose 1 à 12 mois, Dose 2 à 16-18 mois.", description: "Le vaccin Rougeole-Oreillons-Rubéole est essentiel pour éradiquer ces maladies très contagieuses et éviter des complications neurologiques.", pharmacistPrescribable: false });
+        // Note: 10 years = 120 months
+        if (ageInYears <= 10) {
+            if (ageInYears < 2) {
+                recs.push({
+                    vaccine: "Visites des 2, 4 et 11 mois",
+                    reason: "DTP, Coqueluche, Hib, Hépatite B, Pneumocoque.",
+                    description: "Ces 3 rendez-vous clés (M2, M4, M11) permettent d'administrer le vaccin 'Hexavalent' et le 'Pneumocoque'. C'est le socle de l'immunité de bébé.",
+                    urgent: true,
+                    obligatory: true,
+                    pharmacistPrescribable: false
+                });
+            } else {
+                recs.push({
+                    vaccine: "Calendrier Pédiatrique (11 Vaccins)",
+                    reason: "DTP, Coqueluche, Hib, Hep B, Pneumocoque, Men C, ROR.",
+                    description: "Depuis 2018, 11 vaccins sont obligatoires pour les enfants. Ils protègent contre des maladies potentiellement graves. Le suivi se fait lors des visites chez le médecin.",
+                    urgent: true,
+                    obligatory: true,
+                    pharmacistPrescribable: false
+                });
             }
+
+            if (Math.abs(ageInYears - 6) < 0.5) { // About 6 years old
+                recs.push({ vaccine: "Rappel 6 ans", reason: "DTP + Coqueluche (Indispensable avant le CP).", description: "Ce rappel est crucial avant l'entrée en école primaire pour maintenir l'immunité contre la Diphtérie, le Tétanos, la Polio et la Coqueluche.", obligatory: true, pharmacistPrescribable: false });
+            }
+
+            // Infant specific logic using MONTHS for precision
+            if (ageInYears < 2) {
+                recs.push({ vaccine: "Méningocoque B (Recommandé)", reason: "3 doses : 3, 5 et 12 mois.", description: "Vaccination recommandée pour tous les nourrissons contre les infections invasives à méningocoque B.", obligatory: false, pharmacistPrescribable: false });
+                recs.push({ vaccine: "Méningocoque C (Obligatoire)", reason: "2 doses : 5 et 12 mois.", description: "Vaccination obligatoire contre le méningocoque C, très efficace pour l'immunité de groupe.", obligatory: true, pharmacistPrescribable: false });
+                recs.push({ vaccine: "ROR (Rougeole)", reason: "Dose 1 à 12 mois, Dose 2 à 16-18 mois.", description: "Le vaccin Rougeole-Oreillons-Rubéole est essentiel pour éradiquer ces maladies très contagieuses et éviter des complications neurologiques.", obligatory: true, pharmacistPrescribable: false });
+
+                // AJOUT : Rotavirus (Recommandé HAS) - Only valid for very young infants (start at 2m, end at 6m)
+                if (ageInMonths <= 6) {
+                    recs.push({
+                        vaccine: "Rotavirus (Gastro)",
+                        reason: "Recommandé à 2 mois (vaccin oral). A finir avant 6 mois.",
+                        description: "Protège les nourrissons contre les gastro-entérites sévères à Rotavirus (hospitalisations). C'est un vaccin à boire, non obligatoire mais fortement recommandé.",
+                        obligatory: false,
+                        pharmacistPrescribable: false
+                    });
+                }
+            }
+
+            // AJOUT : BCG (Ciblé)
+            recs.push({
+                vaccine: "BCG (Tuberculose)",
+                reason: "Uniquement si risque (Ile-de-France, Guyane, famille...).",
+                description: "La vaccination BCG n'est plus obligatoire pour tous, mais reste recommandée pour les enfants vivant en Île-de-France, Guyane, Mayotte, ou ayant des antécédents familiaux/liens avec des pays touchés.",
+                pharmacistPrescribable: false
+            });
 
             recs.push({ vaccine: "Grippe", reason: "Recommandé dès 6 mois si l'enfant est fragile (asthme, cœur...).", description: "Pour les enfants souffrant de maladies chroniques (asthme, diabète...), la grippe peut être très sévère. La vaccination annuelle est fortement conseillée.", pharmacistPrescribable: false });
         }
 
         // --- ADOLESCENTS (11 - 19 ans) ---
-        if (numAge >= 11 && numAge <= 19) {
+        if (ageInYears >= 11 && ageInYears <= 19) {
             recs.push({
                 vaccine: "HPV (Gardasil 9)",
                 reason: "Garçons et Filles : 2 doses entre 11-14 ans. Rattrapage (3 doses) jusqu'à 19 ans.",
@@ -166,11 +232,12 @@ export const VaccinationAssistant = () => {
                 pharmacistPrescribable: true
             });
 
-            if (numAge >= 11 && numAge <= 13) {
+            if (ageInYears >= 11 && ageInYears <= 13) {
                 recs.push({
                     vaccine: "Rappel 11-13 ans",
                     reason: "DTP + Coqueluche (3ème rappel indispensable).",
                     description: "Rappel clé de l'adolescence pour réactiver la protection contre Diphtérie, Tétanos, Polio et Coqueluche, dont l'immunité baisse avec le temps.",
+                    obligatory: true,
                     pharmacistPrescribable: true
                 });
             }
@@ -182,19 +249,19 @@ export const VaccinationAssistant = () => {
                 pharmacistPrescribable: true
             });
 
-            if (numAge >= 12) {
+            if (ageInYears >= 12) {
                 recs.push({ vaccine: "Covid-19", reason: "Si fragile ou vivant avec des personnes fragiles.", description: "Empêche les formes graves. Particulièrement important si l'adolescent vit avec des grands-parents ou des personnes immunodéprimées.", pharmacistPrescribable: true });
             }
         }
 
         // --- ADULTES (20 - 64 ans) ---
-        if (numAge >= 20 && numAge < 65 && !isPregnant) {
+        if (ageInYears >= 20 && ageInYears < 65 && !isPregnant) {
             // 25 ANS
-            if (numAge >= 24 && numAge <= 26) {
+            if (ageInYears >= 24 && ageInYears <= 26) {
                 recs.push({ vaccine: "Rappel 25 ans", reason: "DTP + Coqueluche. Vérifier ROR (doit avoir eu 2 doses).", description: "Le rappel des 25 ans est LE grand rendez-vous de l'adulte jeune. Il contient DTP et Coqueluche (pour protéger les futurs bébés). C'est aussi le moment de vérifier si vous avez eu vos 2 doses de vaccin ROR dans l'enfance.", urgent: true, pharmacistPrescribable: true });
             }
             // 45 ANS
-            else if (numAge >= 44 && numAge <= 46) {
+            else if (ageInYears >= 44 && ageInYears <= 46) {
                 recs.push({ vaccine: "Rappel 45 ans", reason: "DTP + Coqueluche (si contact bébé) ou DTP seul.", description: "Rappel de mi-vie pour maintenir l'immunité tétanos/polio. La coqueluche est ajoutée si vous êtes en contact avec des nourrissons.", urgent: true, pharmacistPrescribable: true });
             }
             // ENTRE DEUX
@@ -210,21 +277,21 @@ export const VaccinationAssistant = () => {
         }
 
         // --- SENIORS (65+ ans) ---
-        if (numAge >= 65) {
+        if (ageInYears >= 65) {
             // 65 ANS
-            if (numAge >= 65 && numAge <= 66) {
+            if (ageInYears >= 65 && ageInYears <= 66) {
                 recs.push({ vaccine: "Rappel 65 ans", reason: "DTPolio + Grippe + Covid (+ Pneumocoque si risque).", description: "Grand bilan vaccinal de la retraite. On remet à jour le Tétanos/Polio, et on vaccine contre les virus respiratoires saisonniers qui sont plus dangereux avec l'âge.", urgent: true, pharmacistPrescribable: true });
             } else {
-                const isTenYear = (numAge - 65) % 10 === 0; // 75, 85, 95...
+                const isTenYear = (ageInYears - 65) % 10 === 0; // 75, 85, 95...
                 if (isTenYear) {
-                    recs.push({ vaccine: `Rappel ${numAge} ans`, reason: "DTPolio (tous les 10 ans désormais).", description: "Après 65 ans, l'immunité baisse plus vite. Le rappel Tétanos/Polio se fait donc tous les 10 ans (75, 85, 95...) au lieu de 20.", urgent: true, pharmacistPrescribable: true });
+                    recs.push({ vaccine: `Rappel ${ageInYears} ans`, reason: "DTPolio (tous les 10 ans désormais).", description: "Après 65 ans, l'immunité baisse plus vite. Le rappel Tétanos/Polio se fait donc tous les 10 ans (75, 85, 95...) au lieu de 20.", urgent: true, pharmacistPrescribable: true });
                 } else {
                     recs.push({ vaccine: "Suivi DTPolio", reason: "Rappel tous les 10 ans après 65 ans (75, 85...)." });
                 }
             }
 
             // ZONA
-            if (numAge >= 65 && numAge <= 74) {
+            if (ageInYears >= 65 && ageInYears <= 74) {
                 recs.push({ vaccine: "Zona (Shingrix)", reason: "2 doses espacées de 2 à 6 mois. Fortement recommandé.", description: "Le Zona est une réactivation douloureuse du virus de la varicelle. Fréquent après 65 ans, il peut laisser des douleurs chroniques invalidantes. Le nouveau vaccin est très efficace.", pharmacistPrescribable: true });
             }
 
@@ -239,7 +306,7 @@ export const VaccinationAssistant = () => {
         // --- AUTRES VACCINS & RATTRAPAGES CIBLÉS ---
 
         // Hépatite B : Rattrapage général uniquement jusqu'à 15 ans
-        if (numAge >= 11 && numAge <= 15) {
+        if (ageInYears >= 11 && ageInYears <= 15) {
             recs.push({
                 vaccine: "Hépatite B",
                 reason: "Rattrapage possible et remboursé jusqu'à 15 ans.",
@@ -249,7 +316,7 @@ export const VaccinationAssistant = () => {
         }
 
         // Méningocoque C : Rattrapage jusqu'à 24 ans
-        if (numAge >= 11 && numAge <= 24) {
+        if (ageInYears >= 11 && ageInYears <= 24) {
             recs.push({
                 vaccine: "Méningocoque C",
                 reason: "Rattrapage recommandé jusqu'à 24 ans révolus.",
@@ -259,7 +326,7 @@ export const VaccinationAssistant = () => {
         }
 
         // Méningocoques B & ACWY (HAS 2024/2025) : Recommandés chez l'adolescent/jeune adulte
-        if (numAge >= 11 && numAge <= 24) {
+        if (ageInYears >= 11 && ageInYears <= 24) {
             recs.push({
                 vaccine: "Méningocoques ACWY / B",
                 reason: "Nouvelles recos HAS : Adolescents et Jeunes Adultes.",
@@ -269,7 +336,7 @@ export const VaccinationAssistant = () => {
         }
 
         // Varicelle : Pour adultes sans antécédent (sauf grossesse)
-        if (numAge >= 12 && !isPregnant) {
+        if (ageInYears >= 12 && !isPregnant) {
             recs.push({
                 vaccine: "Varicelle",
                 reason: "Si vous n'avez JAMAIS eu la varicelle.",
@@ -279,7 +346,7 @@ export const VaccinationAssistant = () => {
         }
 
         // ROR : Rattrapage pour nés après 1980 (si pas déjà couvert plus haut)
-        if (numAge > 24 && numAge <= 46 && !isPregnant) {
+        if (ageInYears > 24 && ageInYears <= 46 && !isPregnant) {
             // On vérifie si ROR n'a pas déjà été ajouté par le bloc "Adulte" principal
             const rorExists = recs.some(r => r.vaccine.includes("ROR"));
             if (!rorExists) {
@@ -307,7 +374,7 @@ export const VaccinationAssistant = () => {
         setIsLoading(false);
     };
 
-    const showPregnancyCheckbox = sex === "female" && typeof age === "number" && age >= 16;
+    const showPregnancyCheckbox = sex === "female" && typeof age === "number" && age >= 16 && ageUnit === "years";
     const canSubmit = age !== "" && sex !== null;
 
     return (
@@ -359,6 +426,41 @@ export const VaccinationAssistant = () => {
                                     }}
                                     className="border-clay/30 text-ink focus:border-sage"
                                 />
+                                <AnimatePresence>
+                                    {age !== "" && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: "auto" }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="flex gap-2 mt-2 justify-end overflow-hidden"
+                                        >
+                                            <button
+                                                onClick={() => setAgeUnit("years")}
+                                                className={cn(
+                                                    "text-xs font-bold px-3 py-1 rounded-full transition-colors border",
+                                                    ageUnit === "years"
+                                                        ? "bg-sage text-white border-sage"
+                                                        : "bg-transparent text-ink/40 border-clay/20 hover:border-sage/40"
+                                                )}
+                                            >
+                                                Ans
+                                            </button>
+                                            {Number(age) <= 24 && (
+                                                <button
+                                                    onClick={() => setAgeUnit("months")}
+                                                    className={cn(
+                                                        "text-xs font-bold px-3 py-1 rounded-full transition-colors border",
+                                                        ageUnit === "months"
+                                                            ? "bg-sage text-white border-sage"
+                                                            : "bg-transparent text-ink/40 border-clay/20 hover:border-sage/40"
+                                                    )}
+                                                >
+                                                    Mois
+                                                </button>
+                                            )}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
 
                             {/* Sex Selection */}
@@ -474,7 +576,7 @@ export const VaccinationAssistant = () => {
                                 <div className="flex flex-wrap gap-2 pt-2">
                                     <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream/50 text-ink/80 rounded-full text-xs font-bold border border-clay/30">
                                         <Calendar className="w-3 h-3" />
-                                        {age} ans
+                                        {age} {ageUnit === "months" ? "mois" : "ans"}
                                     </div>
                                     <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream/50 text-ink/80 rounded-full text-xs font-bold border border-clay/30 uppercase">
                                         <User className="w-3 h-3" />
