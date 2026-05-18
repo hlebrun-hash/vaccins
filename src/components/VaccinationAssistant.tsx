@@ -18,7 +18,7 @@ interface Recommendation {
     pharmacistPrescribable?: boolean;
 }
 
-const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number }) => {
+const RecommendationItem = ({ rec, index, isDone, onToggleDone }: { rec: Recommendation, index: number, isDone: boolean, onToggleDone: () => void }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const cardVariants = {
@@ -38,23 +38,45 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
             initial="hidden"
             animate="visible"
             whileHover="hover"
-            whileTap="hover"
-            onClick={() => setIsOpen(!isOpen)}
-            className="group cursor-pointer select-none rounded-xl p-2 -mx-2 transition-colors"
+            className={cn(
+                "group select-none rounded-xl p-2 -mx-2 transition-all duration-300",
+                isDone ? "opacity-50" : ""
+            )}
         >
-            <div className="flex gap-4 items-start">
+            <div className="flex gap-3 items-start">
+                {/* Done Checkbox */}
+                <motion.button
+                    whileTap={{ scale: 0.85 }}
+                    onClick={(e) => { e.stopPropagation(); onToggleDone(); }}
+                    title={isDone ? "Marquer comme non fait" : "Marquer comme fait"}
+                    className={cn(
+                        "mt-1 min-w-[32px] h-[32px] rounded-full flex items-center justify-center transition-all duration-300 border-2 flex-shrink-0",
+                        isDone
+                            ? "bg-emerald-500 border-emerald-500 text-white shadow-md"
+                            : "bg-white border-clay/30 text-transparent hover:border-emerald-400 hover:text-emerald-300"
+                    )}
+                >
+                    <Check className="w-4 h-4" />
+                </motion.button>
+
+                {/* Syringe Icon */}
                 <motion.div
                     variants={iconVariants}
                     whileTap="hover"
+                    onClick={() => setIsOpen(!isOpen)}
                     className={cn(
-                        "mt-1 min-w-[32px] h-[32px] rounded-full flex items-center justify-center transition-colors duration-300",
-                        rec.obligatory ? "bg-amber-100 text-amber-600" : "bg-sage/10 text-sage"
+                        "mt-1 min-w-[32px] h-[32px] rounded-full flex items-center justify-center transition-colors duration-300 cursor-pointer",
+                        isDone ? "bg-gray-100 text-gray-400" : rec.obligatory ? "bg-amber-100 text-amber-600" : "bg-sage/10 text-sage"
                     )}>
                     <Syringe className="w-4 h-4" />
                 </motion.div>
-                <div className="flex-1">
+
+                <div className="flex-1 cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
                     <div className="flex justify-between items-start gap-2">
-                        <h3 className="font-semibold text-ink text-lg leading-tight group-hover:text-sage transition-colors">
+                        <h3 className={cn(
+                            "font-semibold text-lg leading-tight transition-colors",
+                            isDone ? "line-through text-ink/40" : "text-ink group-hover:text-sage"
+                        )}>
                             {rec.vaccine}
                         </h3>
                         {rec.description && (
@@ -66,7 +88,7 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
                             </motion.div>
                         )}
                     </div>
-                    <p className="text-ink text-sm mt-1 font-bold">{rec.reason}</p>
+                    <p className={cn("text-sm mt-1 font-bold", isDone ? "text-ink/30 line-through" : "text-ink")}>{rec.reason}</p>
 
                     <AnimatePresence>
                         {isOpen && rec.description && (
@@ -94,15 +116,24 @@ const RecommendationItem = ({ rec, index }: { rec: Recommendation, index: number
                         )}
                     </AnimatePresence>
 
-                    {rec.pharmacistPrescribable ? (
-                        <div className="inline-flex items-center gap-1.5 mt-2 bg-sage/5 text-sage px-3 py-1 rounded-full text-xs font-semibold border border-sage/10">
-                            <div className="w-1.5 h-1.5 rounded-full bg-sage animate-pulse" />
-                            Disponible sans ordonnance
-                        </div>
-                    ) : (
-                        <div className="inline-flex items-center gap-1.5 mt-2 bg-amber-50 text-amber-600 px-3 py-1 rounded-full text-xs font-semibold border border-amber-100">
-                            <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                            Disponible sur ordonnance
+                    {!isDone && (
+                        rec.pharmacistPrescribable ? (
+                            <div className="inline-flex items-center gap-1.5 mt-2 bg-sage/5 text-sage px-3 py-1 rounded-full text-xs font-semibold border border-sage/10">
+                                <div className="w-1.5 h-1.5 rounded-full bg-sage animate-pulse" />
+                                Disponible sans ordonnance
+                            </div>
+                        ) : (
+                            <div className="inline-flex items-center gap-1.5 mt-2 bg-amber-50 text-amber-600 px-3 py-1 rounded-full text-xs font-semibold border border-amber-100">
+                                <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                                Disponible sur ordonnance
+                            </div>
+                        )
+                    )}
+
+                    {isDone && (
+                        <div className="inline-flex items-center gap-1.5 mt-2 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-100">
+                            <Check className="w-3 h-3" />
+                            Déjà effectué
                         </div>
                     )}
                 </div>
@@ -119,6 +150,16 @@ export const VaccinationAssistant = () => {
     const [showResult, setShowResult] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+    const [doneVaccines, setDoneVaccines] = useState<Set<number>>(new Set());
+
+    const toggleDone = (index: number) => {
+        setDoneVaccines(prev => {
+            const next = new Set(prev);
+            if (next.has(index)) next.delete(index);
+            else next.add(index);
+            return next;
+        });
+    };
 
     // Reset pregnancy if criteria changes
     useEffect(() => {
@@ -386,6 +427,7 @@ export const VaccinationAssistant = () => {
         });
 
         setRecommendations(sortedRecs);
+        setDoneVaccines(new Set()); // Reset done state on new calculation
         setShowResult(true);
         setIsLoading(false);
     };
@@ -606,18 +648,65 @@ export const VaccinationAssistant = () => {
                                     )}
                                 </div>
 
-                                <div className="space-y-4 my-8">
+                                {/* Progress Bar */}
+                                {recommendations.length > 0 && (
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between items-center text-xs font-bold">
+                                            <span className="text-ink/50 uppercase tracking-widest">Progression</span>
+                                            <span className={cn(
+                                                "transition-colors font-black",
+                                                doneVaccines.size === recommendations.length ? "text-emerald-500" : "text-sage"
+                                            )}>
+                                                {doneVaccines.size} / {recommendations.length}
+                                            </span>
+                                        </div>
+                                        <div className="w-full h-2 bg-clay/20 rounded-full overflow-hidden">
+                                            <motion.div
+                                                className={cn(
+                                                    "h-full rounded-full",
+                                                    doneVaccines.size === recommendations.length ? "bg-emerald-500" : "bg-sage"
+                                                )}
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${(doneVaccines.size / recommendations.length) * 100}%` }}
+                                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                            />
+                                        </div>
+                                        {doneVaccines.size === recommendations.length && doneVaccines.size > 0 && (
+                                            <motion.p
+                                                initial={{ opacity: 0, y: -4 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="text-center text-xs font-bold text-emerald-500"
+                                            >
+                                                🎉 Vous êtes à jour !
+                                            </motion.p>
+                                        )}
+                                    </div>
+                                )}
+
+                                <motion.div layout className="space-y-4 my-8">
                                     {recommendations.length > 0 ? (
-                                        recommendations.map((rec, i) => (
-                                            <RecommendationItem key={i} rec={rec} index={i} />
-                                        ))
+                                        [...recommendations.map((rec, i) => ({ rec, i }))]
+                                            .sort((a, b) => {
+                                                const aDone = doneVaccines.has(a.i) ? 1 : 0;
+                                                const bDone = doneVaccines.has(b.i) ? 1 : 0;
+                                                return aDone - bDone;
+                                            })
+                                            .map(({ rec, i }) => (
+                                                <RecommendationItem
+                                                    key={i}
+                                                    rec={rec}
+                                                    index={i}
+                                                    isDone={doneVaccines.has(i)}
+                                                    onToggleDone={() => toggleDone(i)}
+                                                />
+                                            ))
                                     ) : (
                                         <div className="text-slate-500 text-center py-4">
                                             Vous semblez être à jour pour les rappels principaux standards.
                                             <br />Vérifiez simplement votre carnet.
                                         </div>
                                     )}
-                                </div>
+                                </motion.div>
 
                                 <div className="pt-6 border-t border-dashed border-clay/40">
                                     <div className="rounded-2xl p-5 text-center font-medium bg-sage/5 text-ink border border-sage/20">
